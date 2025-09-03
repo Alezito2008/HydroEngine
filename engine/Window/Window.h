@@ -11,14 +11,11 @@ namespace Window
         Window(int width, int height, const char* title);
         ~Window();
 
-        void PollEvents();
-        void SwapBuffers();
-        bool ShouldClose() const;
-
-        int GetWidth() const;
-        int GetHeight() const;
-
-        void* GetWindowObject() const;
+        static void PollEvents();
+        [[nodiscard]] bool ShouldClose() const;
+        [[nodiscard]] int GetWidth() const;
+        [[nodiscard]] int GetHeight() const;
+        [[nodiscard]] GLFWwindow* GetWindowObject() const;
 
     private:
         int m_Width;

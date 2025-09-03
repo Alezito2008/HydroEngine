@@ -34,13 +34,12 @@ file(GLOB_RECURSE ENGINE_SOURCES
 
 set(EXTERNAL_SOURCES
     external/glad.c
+        engine/Graphics/GraphicsContext.cpp
 )
 
 add_library(HydroEngine_Core STATIC
     ${ENGINE_SOURCES}
     ${EXTERNAL_SOURCES}
-        engine/Window/Window.cpp
-        engine/Window/Window.h
 )
 
 target_include_directories(HydroEngine_Core PUBLIC

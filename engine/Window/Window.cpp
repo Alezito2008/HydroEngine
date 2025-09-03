@@ -22,6 +22,8 @@ namespace Window
         glViewport(0, 0, width, height);
     }
 
+
+
     void Window::Init()
     {
         if (!glfwInit())
@@ -30,6 +32,10 @@ namespace Window
             throw std::runtime_error("Error al iniciar GLFW");
         }
 
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
         m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, nullptr, nullptr);
         if (!m_Window)
         {
@@ -37,7 +43,6 @@ namespace Window
             throw std::runtime_error("Error al crear la ventana GLFW");
         }
 
-        glfwMakeContextCurrent(m_Window);
         glfwSetFramebufferSizeCallback(m_Window,  framebuffer_size_callback);
 
     }
@@ -57,13 +62,6 @@ namespace Window
         glfwPollEvents();
     }
 
-    void Window::SwapBuffers()
-    {
-        if (m_Window)
-        {
-            glfwSwapBuffers(m_Window);
-        }
-    }
 
     bool Window::ShouldClose() const
     {
@@ -80,7 +78,7 @@ namespace Window
         return m_Height;
     }
 
-    void* Window::GetWindowObject() const
+    GLFWwindow* Window::GetWindowObject() const
     {
         return m_Window;
     }
