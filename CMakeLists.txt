@@ -39,6 +39,8 @@ set(EXTERNAL_SOURCES
 add_library(HydroEngine_Core STATIC
     ${ENGINE_SOURCES}
     ${EXTERNAL_SOURCES}
+        engine/Window/Window.cpp
+        engine/Window/Window.h
 )
 
 target_include_directories(HydroEngine_Core PUBLIC

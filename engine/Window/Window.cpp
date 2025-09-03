@@ -1,0 +1,87 @@
+
+#include "Window.h"
+
+#include <stdexcept>
+
+namespace Window
+{
+
+    Window::Window(int width, int height, const char* title)
+        : m_Width(width), m_Height(height), m_Title(title), m_Window(nullptr)
+    {
+        Init();
+    }
+
+    Window::~Window()
+    {
+        Shutdown();
+    }
+
+    void Window::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
+    }
+
+    void Window::Init()
+    {
+        if (!glfwInit())
+        {
+            // Initialization failed
+            throw std::runtime_error("Error al iniciar GLFW");
+        }
+
+        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, nullptr, nullptr);
+        if (!m_Window)
+        {
+            glfwTerminate();
+            throw std::runtime_error("Error al crear la ventana GLFW");
+        }
+
+        glfwMakeContextCurrent(m_Window);
+        glfwSetFramebufferSizeCallback(m_Window,  framebuffer_size_callback);
+
+    }
+
+    void Window::Shutdown()
+    {
+        if (m_Window)
+        {
+            glfwDestroyWindow(m_Window);
+            m_Window = nullptr;
+        }
+        glfwTerminate();
+    }
+
+    void Window::PollEvents()
+    {
+        glfwPollEvents();
+    }
+
+    void Window::SwapBuffers()
+    {
+        if (m_Window)
+        {
+            glfwSwapBuffers(m_Window);
+        }
+    }
+
+    bool Window::ShouldClose() const
+    {
+        return m_Window ? glfwWindowShouldClose(m_Window) : true;
+    }
+
+    int Window::GetWidth() const
+    {
+        return m_Width;
+    }
+
+    int Window::GetHeight() const
+    {
+        return m_Height;
+    }
+
+    void* Window::GetWindowObject() const
+    {
+        return m_Window;
+    }
+}
