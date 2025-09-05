@@ -35,6 +35,8 @@ file(GLOB_RECURSE ENGINE_SOURCES
 set(EXTERNAL_SOURCES
     external/glad.c
         engine/Graphics/GraphicsContext.cpp
+        engine/Graphics/Texture.cpp
+        engine/Graphics/Texture.h
 )
 
 add_library(HydroEngine_Core STATIC

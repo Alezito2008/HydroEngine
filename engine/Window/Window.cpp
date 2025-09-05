@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-namespace Window
+namespace Hydro
 {
 
     Window::Window(int width, int height, const char* title)

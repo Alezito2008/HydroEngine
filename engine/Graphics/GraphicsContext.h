@@ -1,7 +1,7 @@
 #pragma once
 #include "GLFW/glfw3.h"
 
-namespace GraphicsContext
+namespace Hydro
 {
     class GraphicsContext
     {

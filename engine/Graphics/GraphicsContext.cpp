@@ -5,7 +5,7 @@
 
 #include "glad/glad.h"
 
-namespace GraphicsContext
+namespace Hydro
 {
     GraphicsContext::GraphicsContext(GLFWwindow* window) : m_WindowHandle(window)
     {
