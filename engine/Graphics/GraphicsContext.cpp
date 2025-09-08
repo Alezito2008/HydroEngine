@@ -3,8 +3,6 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "glad/glad.h"
-
 namespace Hydro
 {
     GraphicsContext::GraphicsContext(GLFWwindow* window) : m_WindowHandle(window)
