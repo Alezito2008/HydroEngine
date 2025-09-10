@@ -51,7 +51,7 @@ namespace Hydro {
 
     class Input {
     public:
-        // Keyboard
+        // Teclado
         static bool IsKeyPressed(KeyCode key);
         static bool IsKeyJustPressed(KeyCode key);
         static bool IsKeyJustReleased(KeyCode key);
@@ -64,7 +64,6 @@ namespace Hydro {
         static float GetMouseX();
         static float GetMouseY();
 
-        // Internal use
         static void Init(GLFWwindow* window);
         static void Update();
 
