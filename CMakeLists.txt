@@ -107,7 +107,7 @@ elseif(MSVC)
 endif()
 
 # Crear ejecutable principal
-add_executable(HydroEngine_Main engine/main.cpp)
+add_executable(HydroEngine_Main)
 
 # Enlazar el ejecutable con la biblioteca del engine
 target_link_libraries(HydroEngine_Main PRIVATE HydroEngine_Core)

@@ -14,7 +14,6 @@ namespace Hydro {
     }
 
     void Input::Update() {
-        // Actualizar estados previos
         s_PrevKeyStates = s_KeyStates;
         s_PrevMouseStates = s_MouseStates;
     }

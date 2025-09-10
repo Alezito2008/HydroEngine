@@ -41,7 +41,7 @@ namespace Hydro{
             2, 3, 0    // Segundo triángulo
         };
 
-        // Generar y configurar VAO, VBO y EBO
+        //  VAO, VBO y EBO
         glGenVertexArrays(1, &s_QuadVAO);
         glGenBuffers(1, &s_QuadVBO);
         glGenBuffers(1, &s_QuadEBO);
@@ -107,10 +107,7 @@ namespace Hydro{
         s_ViewProjectionMatrix = viewProjection;
     }
 
-    void Renderer::EndScene()
-    {
-       // PLACEHOLDER
-    }
+
 
     void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
     {

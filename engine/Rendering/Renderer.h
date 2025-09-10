@@ -14,7 +14,6 @@ namespace Hydro
         static void Shutdown();
         static void Clear(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f);
         static void BeginScene(const glm::mat4& viewProjection);
-        static void EndScene();
         static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
         static void DrawQuad(const glm::mat4& transform, const Shader& shader, const Texture& texture);
 
