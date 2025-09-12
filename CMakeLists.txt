@@ -13,7 +13,6 @@ include_directories(${CMAKE_SOURCE_DIR}/engine)
 
 # Dependencias
 find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
 
 # Fuentes
 file(GLOB_RECURSE ENGINE_SOURCES
@@ -33,7 +32,10 @@ add_library(HydroEngine_Core STATIC ${ENGINE_SOURCES}
         engine/Core/Debug.cpp
         engine/Core/Debug.h
         engine/Graphics/VertexArray.cpp
-        engine/Graphics/VertexArray.h)
+        engine/Graphics/VertexArray.h
+        engine/Graphics/VertexBuffer.cpp
+        engine/Graphics/VertexBuffer.h
+        engine/Graphics/VertexBufferLayout.h)
 
 target_include_directories(HydroEngine_Core
         PUBLIC
@@ -44,7 +46,7 @@ target_include_directories(HydroEngine_Core
 target_link_libraries(HydroEngine_Core
         PUBLIC
         OpenGL::GL
-        glfw
+        ${CMAKE_SOURCE_DIR}/external/lib/glfw3.lib
 )
 
 # Definiciones
