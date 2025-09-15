@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <unordered_map>
 
+#include "Window/Window.h"
+
 namespace Hydro {
 
     enum class KeyCode {
@@ -64,7 +66,7 @@ namespace Hydro {
         static float GetMouseX();
         static float GetMouseY();
 
-        static void Init(GLFWwindow* window);
+        static void Init(Hydro::Window window);
         static void Update();
 
     private:

@@ -12,10 +12,11 @@ namespace Hydro
         ~Window();
 
         static void PollEvents();
-        [[nodiscard]] bool ShouldClose() const;
-        [[nodiscard]] int GetWidth() const;
-        [[nodiscard]] int GetHeight() const;
-        [[nodiscard]] GLFWwindow* GetWindowObject() const;
+        bool GetShouldClose() const;
+        void SetShouldClose(bool should) const;
+        int GetWidth() const;
+        int GetHeight() const;
+        GLFWwindow* GetWindowObject() const;
 
     private:
         int m_Width;

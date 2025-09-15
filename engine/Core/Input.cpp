@@ -1,4 +1,7 @@
 #include "Input.h"
+#include "Window/Window.h"
+#include <GLFW/glfw3.h>
+
 #include <iostream>
 
 namespace Hydro {
@@ -9,8 +12,8 @@ namespace Hydro {
     std::unordered_map<int, bool> Input::s_MouseStates;
     std::unordered_map<int, bool> Input::s_PrevMouseStates;
 
-    void Input::Init(GLFWwindow* window) {
-        s_Window = window;
+    void Input::Init(Hydro::Window window) {
+        s_Window = window.GetWindowObject();
     }
 
     void Input::Update() {

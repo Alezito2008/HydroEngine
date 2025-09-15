@@ -63,10 +63,15 @@ namespace Hydro
     }
 
 
-    bool Window::ShouldClose() const
+    bool Window::GetShouldClose() const
     {
         return m_Window ? glfwWindowShouldClose(m_Window) : true;
     }
+    void Window::SetShouldClose(bool should) const
+    {
+        glfwSetWindowShouldClose(m_Window, should);
+    }
+
 
     int Window::GetWidth() const
     {

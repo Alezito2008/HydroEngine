@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Incluir la librería
-add_subdirectory(${CMAKE_SOURCE_DIR}/../HydroEngine ${CMAKE_BINARY_DIR}/HydroEngine_build)
+add_subdirectory(${CMAKE_SOURCE_DIR}/../../HydroEngine ${CMAKE_BINARY_DIR}/HydroEngine_build)
 
 # Ejecutable principal
 add_executable(HydroEngine_Main tests/main.cpp)
