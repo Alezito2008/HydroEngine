@@ -5,12 +5,12 @@
 #include <vector>
 #include <string>
 
-#include "include/Shader.h"
-#include "include/Texture.h"
-#include "include/VertexArray.h"
-#include "include/VertexBuffer.h"
-#include "include/IndexBuffer.h"
-#include "include/Renderer.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "Renderer.h"
 
 #define MAX_BONE_INFLUENCE 4
 

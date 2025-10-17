@@ -49,7 +49,7 @@ int main() {
     // ###########
     // # MODELO  #
     // ###########
-    Model backpack("src/Model/backpack.obj");
+    Model backpack("res/models/backpack/backpack.obj");
 
     windowManager.SetCursorMode(CursorMode::Disabled);
     windowManager.SetCursorPosCallback(processMouse);

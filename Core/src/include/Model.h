@@ -6,9 +6,9 @@
 #include <assimp/postprocess.h>
 
 
-#include "include/Mesh.h"
-#include "include/Shader.h"
-#include "include/Renderer.h"
+#include "Mesh.h"
+#include "Shader.h"
+#include "Renderer.h"
 #include "Texture.h"
 
 #include <string>
