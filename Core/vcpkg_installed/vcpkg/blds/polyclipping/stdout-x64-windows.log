@@ -1,0 +1,23 @@
+-- Note: polyclipping only supports static library linkage. Building static library.
+-- Using cached clipper_ver6.4.2.zip
+-- Cleaning sources at C:/Users/96003020/Desktop/HydroEngine/build/vcpkg_installed/vcpkg/blds/polyclipping/src/-06b887c850.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source C:/Users/96003020/AppData/Local/vcpkg/downloads/clipper_ver6.4.2.zip
+-- Applying patch fix_targets.patch
+-- Using source at C:/Users/96003020/Desktop/HydroEngine/build/vcpkg_installed/vcpkg/blds/polyclipping/src/-06b887c850.clean
+-- Found external ninja('1.12.1').
+-- Configuring x64-windows
+CMake Error at scripts/cmake/vcpkg_execute_required_process.cmake:127 (message):
+    Command failed: "C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe" -v
+    Working Directory: C:/Users/96003020/Desktop/HydroEngine/build/vcpkg_installed/vcpkg/blds/polyclipping/x64-windows-rel/vcpkg-parallel-configure
+    Error code: 1
+    See logs for more information:
+      C:\Users\96003020\Desktop\HydroEngine\build\vcpkg_installed\vcpkg\blds\polyclipping\config-x64-windows-dbg-CMakeCache.txt.log
+      C:\Users\96003020\Desktop\HydroEngine\build\vcpkg_installed\vcpkg\blds\polyclipping\config-x64-windows-rel-CMakeCache.txt.log
+      C:\Users\96003020\Desktop\HydroEngine\build\vcpkg_installed\vcpkg\blds\polyclipping\config-x64-windows-out.log
+
+Call Stack (most recent call first):
+  C:/Users/96003020/Desktop/HydroEngine/build/vcpkg_installed/x64-windows/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:269 (vcpkg_execute_required_process)
+  C:/Users/96003020/AppData/Local/vcpkg/registries/git-trees/2388298c7ad673550c7492454666dd3a34ada895/portfile.cmake:13 (vcpkg_cmake_configure)
+  scripts/ports.cmake:203 (include)
+
+
