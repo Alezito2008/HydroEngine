@@ -26,6 +26,4 @@ if [ $BUILD_STATUS != 0 ]; then
     exit
 fi
 
-if [ $EXECUTABLE_PATH ]; then
-    $EXECUTABLE_PATH
-fi
+$EXECUTABLE_PATH
