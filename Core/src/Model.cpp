@@ -47,12 +47,10 @@ void Model::loadModel(const std::string& path)
 
 void Model::processNode(aiNode* node, const aiScene* scene)
 {
-    std::cout << "Procesando nodo con " << node->mNumMeshes << " meshes" << std::endl;
 
     for (unsigned int i = 0; i < node->mNumMeshes; ++i)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        std::cout << "Procesando mesh " << (i + 1) << " de " << node->mNumMeshes << std::endl;
         meshes.push_back(processMesh(mesh, scene));
     }
 
@@ -149,11 +147,9 @@ std::vector<MeshTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureT
 
         if (it != textureCache.end()) {
             // Textura ya cargada, reutilizar
-            std::cout << "Reutilizando textura del caché: " << texturePath << std::endl;
             texture = it->second;
         } else {
             // Textura nueva, cargar y agregar al caché
-            std::cout << "Cargando textura nueva: " << texturePath << std::endl;
             texture = new Texture(texturePath, true);
             textureCache[texturePath] = texture;
         }

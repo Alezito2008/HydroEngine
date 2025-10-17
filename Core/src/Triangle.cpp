@@ -28,7 +28,7 @@ void processInput(GLFWwindow* window) {
 int mainT() {
 	glfwInit();
 
-	// Decirle a OpenGL los datos sobre la versión
+	// Decirle a OpenGL los datos sobre la versiï¿½n
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -44,7 +44,7 @@ int mainT() {
 
 	// Asignar el contexto a la ventana
 	glfwMakeContextCurrent(window);
-	// Handlear cambios de tamaño
+	// Handlear cambios de tamaï¿½o
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// Cargar GLAD
@@ -67,11 +67,11 @@ int mainT() {
 	glShaderSource(vertexShader, 1, &vertexShaderSourceT, NULL);
 	glCompileShader(vertexShader);
 
-	// Variable para guardar el estado de compilación
+	// Variable para guardar el estado de compilaciï¿½n
 	int success;
-	// String para almacenar información en caso de haber errores
+	// String para almacenar informaciï¿½n en caso de haber errores
 	char infoLog[512];
-	// Obtener el estado de compilación y guardarlo en success
+	// Obtener el estado de compilaciï¿½n y guardarlo en success
 	glad_glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		// Si hay errores, guarda el error en infoLog
@@ -91,7 +91,7 @@ int mainT() {
 		std::cout << "Error al compilar fragment shader: " << infoLog << std::endl;
 	}
 
-	// ShaderProgram es una combinación de varios shaders
+	// ShaderProgram es una combinaciï¿½n de varios shaders
 	unsigned int shaderProgram;
 	// Se asigna el id del nuevo program a shaderProgram
 	shaderProgram = glCreateProgram();
@@ -107,7 +107,7 @@ int mainT() {
 		std::cout << "Error al linkear shaders: " << infoLog << std::endl;
 	}
 
-	// Ya no necesitamos los shaders que creamos así que los eliminamos
+	// Ya no necesitamos los shaders que creamos asï¿½ que los eliminamos
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
@@ -125,12 +125,12 @@ int mainT() {
 	glad_glGenBuffers(1, &VBO);
 	// Se asigna el tipo de buffer (array)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// Copia los datos de los vértices al buffer
+	// Copia los datos de los vï¿½rtices al buffer
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// -- 1. Definir los atributos que recibe el shader -- //
 	// Le dice al GPU que hay un atributo (es como un argumento que se le pasa a los shaders
-	// en la posición 0 (primer arg), que son 3 datos, que es un float, que cada 3 floats es uno de los atributos
+	// en la posiciï¿½n 0 (primer arg), que son 3 datos, que es un float, que cada 3 floats es uno de los atributos
 	// y empieza desde el primer espacio de memoria
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -140,7 +140,7 @@ int mainT() {
 	glUseProgram(shaderProgram);
 	// Comienza a utilizar el VAO
 	glBindVertexArray(VAO);
-	// Dibujar triángulo
+	// Dibujar triï¿½ngulo
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
 
@@ -159,7 +159,7 @@ int mainT() {
 		glUseProgram(shaderProgram);
 		// Comienza a utilizar el VAO
 		glBindVertexArray(VAO);
-		// Dibujar triángulo
+		// Dibujar triï¿½ngulo
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		// Procesar eventos

@@ -27,7 +27,7 @@ WindowManager::WindowManager(const WindowSettings& settings) : m_windowSettings(
 		std::exit(-1);
 	};
 
-	// Decirle a OpenGL los datos sobre la versión
+	// Decirle a OpenGL los datos sobre la versiï¿½n
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -51,7 +51,7 @@ WindowManager::WindowManager(const WindowSettings& settings) : m_windowSettings(
 
 	glViewport(0, 0, m_windowSettings.width, m_windowSettings.height);
 
-	// Handlear cambios de tamaño
+	// Handlear cambios de tamaï¿½o
 	glfwSetFramebufferSizeCallback(m_window, FrameBufferSizeCallback);
 }
 

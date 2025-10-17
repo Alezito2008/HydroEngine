@@ -6,14 +6,13 @@ Texture::Texture(const std::string& path, bool flip /*= false*/,
 	TextureWrapping wrap /*= TextureWrapping::Repeat*/,
 	TextureFiltering filter /*= TextureFiltering::Linear*/)
 {
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(flip);
 
 	glGenTextures(1, &m_RendererID);
 	glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
 	unsigned char* data = stbi_load(path.c_str(), &m_width, &m_height, &m_nrChannels, 0);
 	if (data) {
-		std::cout << "Textura cargada exitosamente: " << path << " (ID: " << m_RendererID << ")" << std::endl;
 
 		GLenum format = (m_nrChannels == 4) ? GL_RGBA : GL_RGB;
 		glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -46,7 +45,6 @@ Texture::Texture(const std::string& path, bool flip /*= false*/,
 
 Texture::~Texture()
 {
-	std::cout << "Liberando textura ID: " << m_RendererID << std::endl;
 	glDeleteTextures(1, &m_RendererID);
 }
 
