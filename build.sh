@@ -5,8 +5,9 @@ EXECUTABLE_PATH=false;
 case $1 in
     "") ;;
     Core)
-        EXECUTABLE_PATH=./build/Core/Core
-        ;;
+        EXECUTABLE_PATH=./build/Core/Core;;
+    Editor)
+        EXECUTABLE_PATH=./build/Editor/EditorMain;;
     *)
         echo Target no encontrado
         exit
