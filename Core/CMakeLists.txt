@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Archivos fuente
-file(GLOB SOURCES src/*.cpp)
+file(GLOB_RECURSE SOURCES src/*.cpp)
 
 # Ejecutable
 add_executable(Core ${SOURCES})
@@ -19,8 +19,8 @@ endif()
 
 # Includes comunes
 target_include_directories(Core PRIVATE
-        src/include
-        external/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
+        ${CMAKE_CURRENT_SOURCE_DIR}/external/include
 )
 
 # --- Dependencias ---

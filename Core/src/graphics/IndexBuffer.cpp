@@ -1,4 +1,4 @@
-#include "IndexBuffer.h"
+#include "graphics/IndexBuffer.h"
 #include "Debug.h"
 
 IndexBuffer::IndexBuffer(unsigned int* data, unsigned int count) : m_Count(count)

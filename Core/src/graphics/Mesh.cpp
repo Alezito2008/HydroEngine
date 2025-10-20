@@ -1,4 +1,4 @@
-#include "include/Mesh.h"
+#include "graphics/Mesh.h"
 
 Mesh::Mesh(const std::vector<Vertex>& vertices,
            const std::vector<unsigned int>& indices,

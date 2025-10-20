@@ -4,8 +4,8 @@
 #include <GLFW/glfw3.h>
 
 #include "WindowManager.h"
-#include "Renderer.h"
-#include "InputManager.h"
+#include "graphics/Renderer.h"
+#include "input/InputManager.h"
 
 class Application
 {

@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "KeyCodes.h"
+#include "input/KeyCodes.h"
 
 class InputManager {
 private:

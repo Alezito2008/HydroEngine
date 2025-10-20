@@ -1,4 +1,4 @@
-#include "VertexArray.h"
+#include "graphics/VertexArray.h"
 #include "Debug.h"
 
 VertexArray::VertexArray()

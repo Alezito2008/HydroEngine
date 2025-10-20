@@ -6,12 +6,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "graphics/Model.h"
+#include "graphics/Shader.h"
+#include "graphics/Renderer.h"
+
+#include "input/InputManager.h"
+
 #include "WindowManager.h"
-#include "Shader.h"
-#include "Renderer.h"
 #include "Camera.h"
-#include "InputManager.h"
-#include "Model.h"
 
 WindowSettings windowSettings("OpenGL Model Loader", 1500, 1000);
 WindowManager windowManager(windowSettings);
