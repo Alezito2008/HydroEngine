@@ -9,8 +9,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Archivos fuente
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
-# Ejecutable
-add_executable(Core ${SOURCES})
+set(GLAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
+include_directories(${GLAD_DIR}/include)
+
+# --- Librería principal ---
+add_library(Core SHARED ${SOURCES})
 
 # Definiciones para Windows
 if (WIN32)
@@ -18,43 +21,36 @@ if (WIN32)
 endif()
 
 # Includes comunes
-target_include_directories(Core PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
-        ${CMAKE_CURRENT_SOURCE_DIR}/external/include
+target_include_directories(Core PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/Core
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/include
+    ${GLAD_DIR}/include
 )
 
 # --- Dependencias ---
 if(WIN32)
-    # OpenGL y GLFW
     find_package(OpenGL REQUIRED)
     find_package(glfw3 CONFIG REQUIRED)
-
-    # Ruta de Assimp compilado
-    set(assimp_DIR "C:/Program Files/assimp/cmake")  # <- Cambiar según tu instalación
+    set(assimp_DIR "C:/Program Files/assimp/cmake")
     find_package(assimp REQUIRED)
 
-    # Link de librerías
-    target_link_libraries(Core PRIVATE
-            OpenGL::GL
-            glfw
-            assimp::assimp
+    target_link_libraries(Core PUBLIC
+        OpenGL::GL
+        glfw
+        assimp::assimp
     )
 
 elseif(UNIX)
-    # OpenGL
     find_package(OpenGL REQUIRED)
-    target_link_libraries(Core PRIVATE OpenGL::GL)
-
-    # GLFW vía pkg-config
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GLFW REQUIRED glfw3)
+
     target_include_directories(Core PRIVATE ${GLFW_INCLUDE_DIRS})
-    target_link_libraries(Core PRIVATE ${GLFW_LIBRARIES})
 
-    # Dependencias del sistema
-    target_link_libraries(Core PRIVATE X11 pthread dl m)
-
-    # Assimp en Linux
-    find_package(assimp REQUIRED)
-    target_link_libraries(Core PRIVATE assimp)
+    target_link_libraries(Core PUBLIC
+        OpenGL::GL
+        ${GLFW_LIBRARIES}
+        X11 pthread dl m
+        assimp
+    )
 endif()

@@ -27,9 +27,12 @@ target_include_directories(EditorMain PRIVATE
 
 # Librerias y demás
 
-target_include_directories(EditorMain PRIVATE ${PROJECT_SOURCE_DIR}/../ECS/include)
+target_include_directories(EditorMain PRIVATE
+    ${PROJECT_SOURCE_DIR}/../ECS/include
+    ${PROJECT_SOURCE_DIR}/../Core/include
+)
 
-target_link_libraries(EditorMain PRIVATE ECS)
+target_link_libraries(EditorMain PRIVATE ECS Core)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/imgui)
 
