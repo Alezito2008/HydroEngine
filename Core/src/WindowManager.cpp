@@ -43,9 +43,10 @@ WindowManager::WindowManager(const WindowSettings& settings) : m_windowSettings(
 
 	glfwSetWindowUserPointer(m_window, this);
 	glfwMakeContextCurrent(m_window);
+	glfwSwapInterval(1);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Erro al inicializar GLAD" << std::endl;
+		std::cout << "Error al inicializar GLAD" << std::endl;
 		std::exit(-1);
 	}
 

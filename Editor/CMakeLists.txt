@@ -4,6 +4,7 @@ project(Editor)
 
 add_executable(EditorMain
     src/main.cpp
+    src/ImGuiLayer.cpp
     src/Interface.cpp
     src/DockLayout.cpp
     src/Themes.cpp
