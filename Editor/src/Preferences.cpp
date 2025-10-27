@@ -75,8 +75,6 @@ Preferences& PreferenceManager::GetPreferences(const std::string& fileName)
         
         if (key == "theme") {
             s_Preferences.theme = value;
-        } else if (key == "fontSize") {
-            DeserializeField<float>(value, s_Preferences.fontSize);
         } else if (key == "autoScroll") {
             DeserializeField<bool>(value, s_Preferences.autoScroll);
         } else {
@@ -99,7 +97,6 @@ bool PreferenceManager::SavePreferences(const std::string& fileName)
     if (!out.is_open()) return false;
 
     out << "theme = " << s_Preferences.theme << '\n';
-    out << "fontSize = " << s_Preferences.fontSize << '\n';
     out << "autoScroll = " << s_Preferences.autoScroll << '\n';
 
     return true;

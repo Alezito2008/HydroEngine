@@ -4,7 +4,7 @@
 #include "glad/glad.h"
 #include "Console.h"
 
-unsigned int GamePanel::frameBuffer = 0;
+static unsigned int frameBuffer  = 0;
 static unsigned int colorTexture = 0;
 static unsigned int depthBuffer  = 0;
 static unsigned int fbWidth      = 0;
@@ -38,13 +38,7 @@ bool GamePanel::InitFramebuffer(unsigned int width, unsigned int height)
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
     // Comprobar
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        Console::Error("Error creating GameFrameBuffer");
-        return false;
-    }
-
-    Console::Debug("GameFrameBuffer created!");
-    return true;
+    return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
 }
 
 void GamePanel::Render()
@@ -61,4 +55,20 @@ void GamePanel::Render()
     Image((void*)(intptr_t)colorTexture, avail, ImVec2(0,1), ImVec2(1,0));
 
     End();
+}
+
+void GamePanel::Bind()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+}
+
+void GamePanel::Unbind()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void GamePanel::Clear(float r, float g, float b)
+{
+    glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

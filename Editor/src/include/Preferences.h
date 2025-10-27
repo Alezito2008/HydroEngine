@@ -5,7 +5,6 @@
 
 struct Preferences {
     std::string theme = "Dark";
-    float fontSize = 16;
     bool autoScroll = true;
 };
 

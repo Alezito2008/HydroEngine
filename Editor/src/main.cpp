@@ -15,16 +15,14 @@ int main() {
 
     // ---------------- Main Loop ----------------
     while (!glfwWindowShouldClose(window)) {
+        GamePanel::Bind();
+        GamePanel::Clear(1.0f, 0.0f, 1.0f);
+        // Dibujar aca el juego
+        GamePanel::Unbind();
+
         imgui.StartFrame();
         ShowInterface();
         imgui.EndFrame();
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, GamePanel::frameBuffer);
-
-        glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         windowManager.PollEventsAndSwapBuffers();
     }
