@@ -15,6 +15,7 @@ add_executable(EditorMain
     src/Panels/Tree/TreePanel.cpp
     src/Panels/Inspector/InspectorPanel.cpp
     src/Panels/MenuBar/MenuBar.cpp
+    src/Panels/GamePanel/GamePanel.cpp
     
     src/Popups/ComponentSelector/ComponentSelectorPopup.cpp
 )

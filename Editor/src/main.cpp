@@ -1,6 +1,7 @@
 #include "Core/WindowManager.h"
 #include "ImGuiLayer.h"
 #include "Interface.h"
+#include "GamePanel/GamePanel.h"
 
 #include <iostream>
 
@@ -10,14 +11,20 @@ int main() {
     auto* window        = windowManager.GetWindow();
     auto imgui          = ImGuiLayer(window);
 
-    // ---------------- Main Loop ----------------
-    while (!glfwWindowShouldClose(window)) {        
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+    GamePanel::InitFramebuffer(windowSettings.width, windowSettings.height);
 
+    // ---------------- Main Loop ----------------
+    while (!glfwWindowShouldClose(window)) {
         imgui.StartFrame();
         ShowInterface();
         imgui.EndFrame();
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, GamePanel::frameBuffer);
+
+        glClearColor(1.0f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         windowManager.PollEventsAndSwapBuffers();
     }

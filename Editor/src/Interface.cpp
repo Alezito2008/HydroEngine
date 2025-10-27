@@ -7,6 +7,7 @@
 #include "Console/ConsolePanel.h"
 #include "Tree/TreePanel.h"
 #include "Inspector/InspectorPanel.h"
+#include "GamePanel/GamePanel.h"
 
 #include "SceneManager.h"
 #include "GameObject.h"
@@ -66,7 +67,7 @@ void ShowInterface() {
     SplitList splitList{
         { "root", ImGuiDir_Right, "###Inspector", "Left", 0.25 },
         { "Left", ImGuiDir_Down, "###Console", "Up", 0.25 },
-        { "Up", ImGuiDir_Left, "###Tree", "Right", 0.3 },
+        { "Up", ImGuiDir_Left, "###Tree", "###Game", 0.3 },
     };
     layout.Setup(splitList);
 
@@ -74,4 +75,5 @@ void ShowInterface() {
     ConsolePanel::Render();
     TreePanel::Render(sceneManager.GetScenes());
     InspectorPanel::Render();
+    GamePanel::Render();
 }
