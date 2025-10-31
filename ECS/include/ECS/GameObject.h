@@ -5,15 +5,14 @@
 #include <iostream>
 #include <algorithm>
 
-#include "Components/Transform.h"
-
-class Component;
+// #include "Transform/Transform.h"
 class Transform;
+class Component;
 
 class GameObject {
     public:
         GameObject(const std::string& name = "");
-        ~GameObject() = default;
+        ~GameObject();
 
         std::unique_ptr<Transform> transform;
 

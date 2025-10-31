@@ -2,8 +2,11 @@
 
 #include <iostream>
 
+bool WindowManager::m_IsMinimized = false;
+
 void WindowManager::FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
+	m_IsMinimized = (width == 0 || height == 0);
 	WindowManager* wm = static_cast<WindowManager*>(glfwGetWindowUserPointer(window));
 	if (wm) {
 		wm->SetDimensions(width, height);
@@ -71,6 +74,10 @@ const WindowSettings& WindowManager::GetSettings() const
 
 void WindowManager::PollEventsAndSwapBuffers()
 {
+	if (m_IsMinimized) {
+		glfwWaitEvents();
+		return;
+	}
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
 }

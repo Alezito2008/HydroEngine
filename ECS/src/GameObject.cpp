@@ -1,6 +1,6 @@
 #include "GameObject.h"
 #include "GameObject.inl"
-#include "Components/Transform.h"
+#include "Transform/Transform.h"
 #include "ComponentManager.h"
 
 unsigned int GameObject::s_NextID = 0;
@@ -15,6 +15,8 @@ GameObject::GameObject(const std::string& name)
         m_Name = name;
     }
 }
+
+GameObject::~GameObject() = default;
 
 GameObject *GameObject::FindChild(const std::string &name) const
 {

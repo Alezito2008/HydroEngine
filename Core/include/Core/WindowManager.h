@@ -44,10 +44,11 @@ public:
 private:
 	GLFWwindow* m_window;
 	WindowSettings m_windowSettings;
+	CursorPosCallback m_cursorPosCallback = nullptr;
 
 	static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 	static void CursorPosCallbackInternal(GLFWwindow* window, double posX, double posY);
 
-	CursorPosCallback m_cursorPosCallback = nullptr;
+	static bool m_IsMinimized;
 };
 

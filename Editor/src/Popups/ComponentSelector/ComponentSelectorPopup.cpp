@@ -4,6 +4,7 @@
 #include "ComponentRegistry.h"
 #include "Themes.h"
 #include "GameObject.h"
+#include "Component.h"
 
 static bool isOpen = false;
 

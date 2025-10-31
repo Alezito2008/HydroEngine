@@ -1,4 +1,6 @@
 #include "ComponentRegistry.h"
+#include "Component.h"
+#include <cassert>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -12,8 +14,11 @@
 
 void ComponentRegistry::Register(const std::string &name, ComponentRegistry::CreatorFunc creator)
 {
-    auto it = s_Creators.find(name);
-    assert(it == s_Creators.end() && "The component is already registered");
+    auto found = s_Creators.find(name);
+    if (found != s_Creators.end()) {
+        std::cerr << "Component already registered: " << name << std::endl;
+        assert(false && "The component is already registered");
+    }
     s_Creators[name] = creator;
 }
 
@@ -50,18 +55,6 @@ bool ComponentRegistry::LoadLibrary(const std::string &path, bool clear /*= true
     }
     
     dlerror();
-
-    RegisterComponentsFunc registerComponents = reinterpret_cast<RegisterComponentsFunc>(
-        dlsym(handle, "RegisterComponents")
-    );
-
-    if (!registerComponents) {
-        std::cout << "[ERROR] void RegisterComponents() not found on " << path << std::endl;
-        dlclose(handle);
-        return false;
-    }
-
-    registerComponents();
 
     #endif
 

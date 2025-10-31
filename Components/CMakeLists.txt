@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.30)
 project(Components CXX)
 
 add_library(Components SHARED
-    Register.cpp
-    TestComponent/TestComponent.cpp
+    # TestComponent/TestComponent.cpp
+    Transform/Transform.cpp
 )
 
 target_include_directories(Components PUBLIC

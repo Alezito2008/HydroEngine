@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include <cassert>
 
 Scene& SceneManager::CreateScene(const std::string& name)
 {

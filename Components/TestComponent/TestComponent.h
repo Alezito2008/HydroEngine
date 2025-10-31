@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include "ComponentRegistry.h"
 #include "Register.h"
 
 class TestComponent : public Component {
@@ -30,6 +29,3 @@ public:
         return name; 
     };
 };
-
-REGISTER_COMPONENT(TestComponent);
-REGISTER_COMPONENT(TestComponent3);

@@ -1,5 +1,7 @@
-#include "Components/Transform.h"
+#include "Transform/Transform.h"
 #include "GameObject.h"
+
+REGISTER_COMPONENT(Transform);
 
 glm::mat4 Transform::GetLocalMatrix() const {
     glm::mat4 model(1.0f);

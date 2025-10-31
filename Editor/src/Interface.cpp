@@ -14,7 +14,7 @@
 #include "GameObject.inl"
 #include "ComponentRegistry.h"
 
-#include "Components/Transform.h"
+#include "Transform/Transform.h"
 
 static DockLayout layout;
 
@@ -55,7 +55,7 @@ void ShowInterface() {
         ComponentRegistry::Register("Jugador", [](GameObject* owner) {
             return std::make_unique<Jugador>(owner);
         });
-
+    
         std::unique_ptr<Component> componenteJugador = ComponentRegistry::Create("Jugador", &cubo3);
         cubo3.AddComponent(std::move(componenteJugador));
 

@@ -5,17 +5,18 @@
 #include <unordered_map>
 #include <string>
 
-/*#define REGISTER_COMPONENT(COMP) \
+#define REGISTER_COMPONENT(COMP) \
 namespace { \
     struct RegisterComponent_##COMP { \
         RegisterComponent_##COMP() { \
+            std::cout << "Registrando componente " << #COMP << std::endl; \
             ComponentRegistry::Register(#COMP, [](GameObject* owner) { \
                 return std::make_unique<COMP>(owner); \
             }); \
         } \
     }; \
     RegisterComponent_##COMP s_##COMP; \
-}*/
+}
 
 class ComponentRegistry {
 public:

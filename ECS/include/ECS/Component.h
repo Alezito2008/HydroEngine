@@ -1,5 +1,6 @@
 #pragma once
 #include "SerializedField.h"
+#include "ComponentRegistry.h"
 #include <string>
 #include <vector>
 
