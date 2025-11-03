@@ -3,6 +3,7 @@
 #include "Themes.h"
 #include "IconFont/IconsFontAwesome7.h"
 #include "Preferences.h"
+#include "Lighting/LightingSettingsPopup.h"
 
 static Preferences& preferences = PreferenceManager::GetPreferences();
 
@@ -33,6 +34,13 @@ void MenuBar::Render() {
             if (BeginMenu( ICON_FA_BRUSH " Theme")) {
                 Preferences_Theme();
                 EndMenu();
+            }
+            EndMenu();
+        }
+
+        if (BeginMenu( ICON_FA_LIGHTBULB " Scene")) {
+            if (MenuItem("Lighting Settings...")) {
+                LightingSettingsPopup::Open();
             }
             EndMenu();
         }

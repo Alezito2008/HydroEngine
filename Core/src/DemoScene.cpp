@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <algorithm>
 #include <cmath>
 
 #include "input/InputManager.h"
@@ -77,7 +78,10 @@ void DemoScene::Update(float deltaTime, bool allowInput)
     m_shader->Bind();
     m_shader->setVec3("viewPos", m_camera.GetPosition());
     m_shader->setVec3("lightPos", m_lightPos);
-    m_shader->setVec3("lightColor", m_lightColor);
+    m_shader->setVec3("lightColor", m_lighting.color);
+    m_shader->setFloat("lightIntensity", std::max(0.0f, m_lighting.intensity));
+    m_shader->setFloat("ambientStrength", std::clamp(m_lighting.ambientStrength, 0.0f, 1.0f));
+    m_shader->setFloat("shininess", std::max(1.0f, m_lighting.shininess));
 
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));

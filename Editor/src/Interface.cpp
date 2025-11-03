@@ -8,6 +8,7 @@
 #include "Tree/TreePanel.h"
 #include "Inspector/InspectorPanel.h"
 #include "GamePanel/GamePanel.h"
+#include "Lighting/LightingSettingsPopup.h"
 
 #include "SceneManager.h"
 #include "GameObject.h"
@@ -76,4 +77,5 @@ void ShowInterface() {
     TreePanel::Render(sceneManager.GetScenes());
     InspectorPanel::Render();
     GamePanel::Render();
+    LightingSettingsPopup::Render();
 }

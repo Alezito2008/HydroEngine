@@ -14,12 +14,22 @@ class Model;
 
 class DemoScene {
 public:
+    struct LightingSettings {
+        glm::vec3 color{1.0f, 1.0f, 1.0f};
+        float intensity{1.0f};
+        float ambientStrength{0.2f};
+        float shininess{32.0f};
+    };
+
     DemoScene();
     ~DemoScene();
 
     void Initialize(GLFWwindow* window, unsigned int width, unsigned int height);
     void Resize(unsigned int width, unsigned int height);
     void Update(float deltaTime, bool allowInput);
+
+    LightingSettings& GetLightingSettings() { return m_lighting; }
+    const LightingSettings& GetLightingSettings() const { return m_lighting; }
 
     inline unsigned int GetViewportWidth() const { return m_width; }
     inline unsigned int GetViewportHeight() const { return m_height; }
@@ -37,7 +47,7 @@ private:
 
     glm::mat4 m_projection{};
     glm::vec3 m_lightPos{2.0f, 2.0f, 2.0f};
-    glm::vec3 m_lightColor{1.0f, 1.0f, 1.0f};
+    LightingSettings m_lighting{};
 
     GLFWwindow* m_window{nullptr};
 

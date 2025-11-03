@@ -11,6 +11,9 @@ in VS_OUT {
 uniform vec3 viewPos;
 uniform vec3 lightPos;
 uniform vec3 lightColor;
+uniform float lightIntensity;
+uniform float ambientStrength;
+uniform float shininess;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
@@ -26,19 +29,20 @@ void main()
 	vec3 lightDir = normalize(lightPos - fs_in.FragPos);
 	vec3 viewDir = normalize(viewPos - fs_in.FragPos);
 
-	float ambientStrength = 0.2;
-	vec3 ambient = ambientStrength * lightColor;
+	vec3 lightEnergy = lightColor * lightIntensity;
+
+	vec3 ambient = ambientStrength * lightEnergy;
 
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * lightColor;
+	vec3 diffuse = diff * lightEnergy;
 
 	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 	vec3 specularMap = texture(texture_specular1, fs_in.TexCoords).rgb;
 	float specularStrength = max(max(specularMap.r, specularMap.g), specularMap.b);
 	if (specularStrength == 0.0)
 		specularStrength = 0.5;
-	vec3 specular = specularStrength * spec * lightColor;
+	vec3 specular = specularStrength * spec * lightEnergy;
 
 	vec3 color = (ambient + diffuse) * albedo + specular;
 	FragColor = vec4(color, 1.0);

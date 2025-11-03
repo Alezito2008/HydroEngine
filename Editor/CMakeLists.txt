@@ -18,6 +18,7 @@ add_executable(EditorMain
     src/Panels/GamePanel/GamePanel.cpp
     
     src/Popups/ComponentSelector/ComponentSelectorPopup.cpp
+    src/Popups/Lighting/LightingSettingsPopup.cpp
 )
 
 target_include_directories(EditorMain PRIVATE

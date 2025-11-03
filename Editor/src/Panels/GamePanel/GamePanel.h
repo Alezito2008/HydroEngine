@@ -2,6 +2,8 @@
 
 #include "Core/WindowManager.h"
 
+class DemoScene;
+
 namespace GamePanel {
     void Initialize(WindowManager& windowManager, unsigned int width, unsigned int height);
     void Shutdown();
@@ -10,4 +12,6 @@ namespace GamePanel {
     void Bind();
     void Unbind();
     void Clear(float r = 0.0f, float g = 0.0f, float b = 0.0f);
+
+    DemoScene* GetScene();
 }
