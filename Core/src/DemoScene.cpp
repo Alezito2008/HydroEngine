@@ -258,12 +258,18 @@ void DemoScene::UpdateGameplay(float deltaTime)
 
 		CollectibleComponent& data = *handle.component;
 
-		if (!handle.object->IsActive()) {
+		bool isActive = handle.object->IsActive();
+
+		if (!isActive) {
 			if (!data.collected) {
 				data.collected = true;
 			}
 			++collectedCount;
 			continue;
+		}
+
+		if (data.collected && isActive) {
+			data.collected = false;
 		}
 
 		if (data.enableRotation && data.rotationSpeed != 0.0f) {
@@ -369,6 +375,10 @@ void DemoScene::SpawnCollectibles(std::size_t count)
 	std::uniform_real_distribution<float> bobPhase(0.0f, glm::two_pi<float>());
 	std::uniform_real_distribution<float> spinStart(0.0f, glm::two_pi<float>());
 
+	float amplitudeMin = std::min(m_collectibleAmplitudeMin, m_collectibleAmplitudeMax);
+	float amplitudeMax = std::max(m_collectibleAmplitudeMin, m_collectibleAmplitudeMax);
+	std::uniform_real_distribution<float> amplitudeDist(amplitudeMin, amplitudeMax);
+
 	const float minDistanceFromCenter = 1.5f;
 	const float minDistanceBetween = 1.25f;
 
@@ -411,6 +421,7 @@ void DemoScene::SpawnCollectibles(std::size_t count)
 			handle.transform->rotation = glm::vec3(180.0f, 0.0f, 0.0f);
 			handle.transform->scale = glm::vec3(m_collectibleScale);
 
+			data.bobbingAmplitude = amplitudeDist(m_rng);
 			data.ResetRuntime(spinStart(m_rng), bobPhase(m_rng));
 			data.collected = false;
 

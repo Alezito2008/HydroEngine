@@ -97,6 +97,8 @@ private:
     float m_collectibleScale{0.6f};
     std::size_t m_initialCollectibleCount{4};
     std::size_t m_maxCollectibleCount{18};
+    float m_collectibleAmplitudeMin{0.25f};
+    float m_collectibleAmplitudeMax{0.6f};
     float m_messageDuration{3.5f};
     std::string m_waveMessage;
     float m_waveMessageTimer{0.0f};
