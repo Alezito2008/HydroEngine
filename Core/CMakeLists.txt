@@ -60,3 +60,5 @@ elseif(UNIX)
         assimp
     )
 endif()
+
+target_link_libraries(Core PUBLIC ECS Components)

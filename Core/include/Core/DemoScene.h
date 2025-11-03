@@ -14,6 +14,10 @@
 struct GLFWwindow;
 class Shader;
 class Model;
+class Scene;
+class GameObject;
+class Transform;
+class CollectibleComponent;
 
 class DemoScene {
 public:
@@ -56,16 +60,10 @@ private:
     void RenderCollectibles(const glm::mat4& view);
     void SpawnCollectibles(std::size_t count);
     void ResetGame();
-
-    struct Collectible {
-        glm::vec3 position{0.0f};
-        glm::vec3 rotationAxis{0.0f, 1.0f, 0.0f};
-        float rotationAngle{0.0f};
-        float rotationSpeed{1.0f};
-        float bobbingPhase{0.0f};
-        float bobbingSpeed{1.0f};
-        bool collected{false};
-    };
+    void SetupECSScene();
+    void EnsureCollectiblePool();
+    GameObject* FindSceneObject(const std::string& name) const;
+    glm::mat4 BuildModelMatrix(const Transform& transform, float bobOffset, float spinAngle) const;
 
     Renderer m_renderer;
     std::unique_ptr<InputManager> m_inputManager;
@@ -79,12 +77,24 @@ private:
     LightingSettings m_lighting{};
     GameplayStats m_stats{};
 
-    std::vector<Collectible> m_collectibles;
+    struct CollectibleHandle {
+        GameObject* object{nullptr};
+        Transform* transform{nullptr};
+        CollectibleComponent* component{nullptr};
+        float bobbingOffset{0.0f};
+    };
+
+    Scene* m_scene{nullptr};
+    GameObject* m_worldRoot{nullptr};
+    GameObject* m_backpackObject{nullptr};
+    Transform* m_backpackTransform{nullptr};
+
+    std::vector<CollectibleHandle> m_collectibles;
+    std::size_t m_activeCollectibles{0};
 
     std::mt19937 m_rng;
 
     float m_collectibleScale{0.6f};
-    float m_collectiblePickupRadius{1.5f};
     std::size_t m_initialCollectibleCount{4};
     std::size_t m_maxCollectibleCount{18};
     float m_messageDuration{3.5f};
@@ -107,6 +117,8 @@ private:
     float m_cameraSpeed{5.0f};
     float m_mouseSensitivity{0.1f};
     bool m_resetHeld{false};
+
+    bool m_sceneReady{false};
 
     bool m_initialized{false};
 };

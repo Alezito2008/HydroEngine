@@ -9,19 +9,17 @@ class GameObject;
 
 class Transform : public Component {
 public:
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 scale;
+    glm::vec3 position{0.0f};
+    glm::vec3 rotation{0.0f};
+    glm::vec3 scale{1.0f};
 
-    glm::mat4 worldMatrix;
-
-    int x, y, z;
+    glm::mat4 worldMatrix{1.0f};
 
     Transform(GameObject* owner)
-        : Component(owner), position(0.0f), rotation(0.0f), scale(0.0f) {
-            SerializeField("x", x);
-            SerializeField("y", y);
-            SerializeField("z", z);
+        : Component(owner) {
+            SerializeField("Position", position);
+            SerializeField("Rotation", rotation);
+            SerializeField("Scale", scale);
         }
 
     const std::string& GetName() const override {
@@ -43,9 +41,9 @@ inline glm::mat4 Transform::GetLocalMatrix() const {
     glm::mat4 model(1.0f);
     model = glm::translate(model, position);
 
-    model = glm::rotate(model, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
-    model = glm::rotate(model, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::rotate(model, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+    model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     model = glm::scale(model, scale);
 
@@ -54,10 +52,16 @@ inline glm::mat4 Transform::GetLocalMatrix() const {
 
 inline void Transform::UpdateWorldMatrix() {
     GameObject* parent = m_Owner->GetParent();
+    glm::mat4 local = GetLocalMatrix();
+
     if (parent) {
-        Transform& parentTransform = *(parent->transform);
-        worldMatrix = parentTransform.GetLocalMatrix();
-    } else {
-        worldMatrix = GetLocalMatrix();
+        Transform* parentTransform = parent->transform.get();
+        if (parentTransform) {
+            parentTransform->UpdateWorldMatrix();
+            worldMatrix = parentTransform->worldMatrix * local;
+            return;
+        }
     }
+
+    worldMatrix = local;
 }

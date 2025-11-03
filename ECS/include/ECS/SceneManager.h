@@ -14,6 +14,8 @@ public:
 
     Scene& GetActiveScene();
     std::vector<std::unique_ptr<Scene>>& GetScenes();
+    Scene* FindScene(const std::string& name);
+    Scene& GetOrCreateScene(const std::string& name);
 private:
     std::vector<std::unique_ptr<Scene>> m_Scenes;
     int m_ActiveSceneIndex = -1;

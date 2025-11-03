@@ -30,3 +30,22 @@ std::vector<std::unique_ptr<Scene>> &SceneManager::GetScenes()
 {
     return m_Scenes;
 }
+
+Scene* SceneManager::FindScene(const std::string& name)
+{
+    for (auto& scene : m_Scenes) {
+        if (scene->GetName() == name) {
+            return scene.get();
+        }
+    }
+    return nullptr;
+}
+
+Scene& SceneManager::GetOrCreateScene(const std::string& name)
+{
+    if (Scene* existing = FindScene(name)) {
+        return *existing;
+    }
+
+    return CreateScene(name);
+}

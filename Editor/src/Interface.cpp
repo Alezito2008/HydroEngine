@@ -13,9 +13,6 @@
 #include "SceneManager.h"
 #include "GameObject.h"
 #include "GameObject.inl"
-#include "ComponentRegistry.h"
-
-#include "Transform/Transform.h"
 
 static DockLayout layout;
 
@@ -23,44 +20,13 @@ static SceneManager& sceneManager = SceneManager::GetInstance();
 
 static bool firstTime = true;
 
-class Jugador : public Component {
-public:
-    int vida = 100;
-
-    Jugador(GameObject* owner) : Component(owner) {
-        SERIALIZED_FIELD(vida);
-    }
-
-    const std::string& GetName() const override {
-        static const std::string name = "Jugador";
-        return name; 
-    }
-};
-
 void ShowInterface() {
     if (firstTime) {
         Themes::LoadGlobalStyles();
         Themes::ApplyPreferredTheme();
 
         SceneManager& sceneManager = SceneManager::GetInstance();
-        Scene& scene = sceneManager.CreateScene("Escena 1");
-        GameObject& cubo1 = scene.CreateGameObject("Cubo 1");
-        GameObject& cubo2 = scene.CreateGameObject("Cubo 2");
-        GameObject& cubo3 = scene.CreateGameObject("Cubo 3");
-
-        cubo3.AddComponent<Transform>();
-
-        cubo2.AddChild(cubo1);
-        cubo3.AddChild(cubo1);
-
-        ComponentRegistry::Register("Jugador", [](GameObject* owner) {
-            return std::make_unique<Jugador>(owner);
-        });
-    
-        std::unique_ptr<Component> componenteJugador = ComponentRegistry::Create("Jugador", &cubo3);
-        cubo3.AddComponent(std::move(componenteJugador));
-
-        ComponentRegistry::LoadLibrary("build/Components/libComponents.so");
+        sceneManager.GetOrCreateScene("Demo Scene");
 
         firstTime = false;
     }

@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(Components STATIC
     # TestComponent/TestComponent.cpp
     Transform/Transform.cpp
+    Collectible/CollectibleComponent.cpp
 )
 
 target_include_directories(Components PUBLIC
