@@ -6,8 +6,8 @@ void Camera::UpdateVectors()
 {
 	m_cameraTarget = m_cameraPos + m_cameraFront;
 	m_cameraDirection = glm::normalize(m_cameraTarget - m_cameraPos);
-	m_cameraRight = glm::normalize(glm::cross(m_cameraDirection, m_worldUp));
-	m_cameraUp = glm::normalize(glm::cross(m_cameraDirection, m_cameraRight));
+	m_cameraRight = glm::normalize(glm::cross(m_worldUp, m_cameraDirection));
+	m_cameraUp = glm::normalize(glm::cross(m_cameraRight, m_cameraDirection));
 	m_view = glm::lookAt(m_cameraPos, m_cameraTarget, m_cameraUp);
 	m_hasToUpdate = false;
 }

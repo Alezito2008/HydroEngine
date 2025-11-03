@@ -86,6 +86,7 @@ void DemoScene::Update(float deltaTime, bool allowInput)
     glm::mat4 model(1.0f);
     model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.0f));
     model = glm::scale(model, glm::vec3(1.0f));
+    model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     m_shader->setMVP(model, view, m_projection);
     m_model->Draw(*m_shader, m_renderer);
@@ -113,8 +114,8 @@ void DemoScene::UpdateMouseInput(bool allowInput)
     m_lastX = xpos;
     m_lastY = ypos;
 
-    deltaX *= m_mouseSensitivity;
-    deltaY *= m_mouseSensitivity;
+    deltaX *= -m_mouseSensitivity;
+    deltaY *= -m_mouseSensitivity;
 
     m_yaw += deltaX;
     m_pitch += deltaY;
