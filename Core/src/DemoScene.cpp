@@ -31,6 +31,12 @@ void DemoScene::Initialize(GLFWwindow* window, unsigned int width, unsigned int 
 
     m_shader = std::make_unique<Shader>("res/shaders/model.vert", "res/shaders/model.frag");
     m_model = std::make_unique<Model>("res/models/backpack/backpack.obj");
+    m_collectibleModel = std::make_unique<Model>("res/models/diamond/Diamond3D.fbx");
+
+    m_shader->Bind();
+    m_shader->setBool("useSolidColor", false);
+    m_shader->setVec3("solidColor", glm::vec3(0.0f));
+    m_shader->setFloat("solidSpecularStrength", 0.6f);
 
     UpdateProjection();
 
@@ -79,6 +85,7 @@ void DemoScene::Update(float deltaTime, bool allowInput)
     glm::mat4 view = m_camera.GetView();
 
     m_shader->Bind();
+    m_shader->setBool("useSolidColor", false);
     m_shader->setVec3("viewPos", m_camera.GetPosition());
     m_shader->setVec3("lightPos", m_lightPos);
     m_shader->setVec3("lightColor", m_lighting.color);
@@ -241,9 +248,14 @@ void DemoScene::UpdateGameplay(float deltaTime)
 
 void DemoScene::RenderCollectibles(const glm::mat4& view)
 {
-    if (!m_shader || m_collectibles.empty()) {
+    if (!m_shader || !m_collectibleModel || m_collectibles.empty()) {
         return;
     }
+
+    const glm::vec3 collectibleColor(0.35f, 0.75f, 1.0f);
+    m_shader->setBool("useSolidColor", true);
+    m_shader->setVec3("solidColor", collectibleColor);
+    m_shader->setFloat("solidSpecularStrength", 0.85f);
 
     for (const auto& collectible : m_collectibles) {
         if (collectible.collected) {
@@ -260,9 +272,12 @@ void DemoScene::RenderCollectibles(const glm::mat4& view)
         model = glm::rotate(model, collectible.rotationAngle, collectible.rotationAxis);
         model = glm::scale(model, glm::vec3(m_collectibleScale));
 
-        m_shader->setMVP(model, view, m_projection);
-        m_model->Draw(*m_shader, m_renderer);
+    m_shader->setMVP(model, view, m_projection);
+    m_collectibleModel->Draw(*m_shader, m_renderer);
     }
+
+    m_shader->setBool("useSolidColor", false);
+    m_shader->setFloat("solidSpecularStrength", 0.6f);
 }
 
 void DemoScene::SpawnCollectibles(std::size_t count)

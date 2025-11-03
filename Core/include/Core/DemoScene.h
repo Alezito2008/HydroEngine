@@ -72,6 +72,7 @@ private:
     Camera m_camera;
     std::unique_ptr<Shader> m_shader;
     std::unique_ptr<Model> m_model;
+    std::unique_ptr<Model> m_collectibleModel;
 
     glm::mat4 m_projection{};
     glm::vec3 m_lightPos{2.0f, 2.0f, 2.0f};
@@ -82,7 +83,7 @@ private:
 
     std::mt19937 m_rng;
 
-    float m_collectibleScale{0.35f};
+    float m_collectibleScale{0.6f};
     float m_collectiblePickupRadius{1.5f};
     std::size_t m_initialCollectibleCount{4};
     std::size_t m_maxCollectibleCount{18};

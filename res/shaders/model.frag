@@ -17,13 +17,22 @@ uniform float shininess;
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
+uniform bool useSolidColor;
+uniform vec3 solidColor;
+uniform float solidSpecularStrength;
 
 void main()
 {
 	vec3 albedo = texture(texture_diffuse1, fs_in.TexCoords).rgb;
 
-	if (length(albedo) < 0.01)
+	if (useSolidColor)
+	{
+		albedo = solidColor;
+	}
+	else if (length(albedo) < 0.01)
+	{
 		albedo = vec3(0.8);
+	}
 
 	vec3 norm = normalize(fs_in.Normal);
 	vec3 lightDir = normalize(lightPos - fs_in.FragPos);
@@ -40,8 +49,14 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
 	vec3 specularMap = texture(texture_specular1, fs_in.TexCoords).rgb;
 	float specularStrength = max(max(specularMap.r, specularMap.g), specularMap.b);
-	if (specularStrength == 0.0)
+	if (useSolidColor)
+	{
+		specularStrength = solidSpecularStrength;
+	}
+	else if (specularStrength == 0.0)
+	{
 		specularStrength = 0.5;
+	}
 	vec3 specular = specularStrength * spec * lightEnergy;
 
 	vec3 color = (ambient + diffuse) * albedo + specular;
