@@ -5,6 +5,9 @@
 #include "glad/glad.h"
 
 #include <algorithm>
+#include <cstdio>
+#include <string>
+#include <vector>
 
 #include "Console.h"
 #include "Core/DemoScene.h"
@@ -173,6 +176,82 @@ void GamePanel::Render()
     }
 
     Image((void*)(intptr_t)colorTexture, avail, ImVec2(0, 1), ImVec2(1, 0));
+
+    if (sceneInitialized && framebufferReady) {
+        const DemoScene::GameplayStats& stats = demoScene.GetStats();
+        const std::string& waveMessage = demoScene.GetWaveMessage();
+
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImVec2 imageMin = ImGui::GetItemRectMin();
+        ImVec2 imageMax = ImGui::GetItemRectMax();
+
+        if (drawList != nullptr) {
+            std::vector<std::string> hudLines;
+            hudLines.reserve(9);
+
+            char buffer[64];
+            std::snprintf(buffer, sizeof(buffer), "Score: %d", stats.score);
+            hudLines.emplace_back(buffer);
+            std::snprintf(buffer, sizeof(buffer), "Wave: %d", stats.wave);
+            hudLines.emplace_back(buffer);
+            std::snprintf(buffer, sizeof(buffer), "Collected: %d / %d", stats.collected, stats.total);
+            hudLines.emplace_back(buffer);
+
+            int totalSeconds = std::max(0, static_cast<int>(stats.elapsed));
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            std::snprintf(buffer, sizeof(buffer), "Time: %02d:%02d", minutes, seconds);
+            hudLines.emplace_back(buffer);
+
+            hudLines.emplace_back("");
+            hudLines.emplace_back("Right click to control camera");
+            hudLines.emplace_back("WASD to move, Shift to sprint");
+            hudLines.emplace_back("Collect the mini backpacks nearby");
+            hudLines.emplace_back("Press R to reset the run");
+
+            ImVec2 padding(14.0f, 12.0f);
+            ImVec2 cursorPadding(12.0f, 10.0f);
+
+            float hudWidth = 0.0f;
+            float hudHeight = cursorPadding.y * 2.0f;
+
+            for (const auto& line : hudLines) {
+                ImVec2 textSize = ImGui::CalcTextSize(line.c_str());
+                hudWidth = std::max(hudWidth, textSize.x);
+                hudHeight += textSize.y;
+                hudHeight += 2.0f;
+            }
+
+            hudWidth += cursorPadding.x * 2.0f;
+
+            ImVec2 hudPos = ImVec2(imageMin.x + padding.x, imageMin.y + padding.y);
+            ImVec2 hudRectMax = ImVec2(hudPos.x + hudWidth, hudPos.y + hudHeight);
+
+            drawList->AddRectFilled(hudPos, hudRectMax, IM_COL32(15, 18, 28, 200), 8.0f);
+            drawList->AddRect(hudPos, hudRectMax, IM_COL32(80, 110, 255, 180), 8.0f, ImDrawFlags_None, 1.5f);
+
+            float textY = hudPos.y + cursorPadding.y;
+            for (const auto& line : hudLines) {
+                ImVec2 textPos(hudPos.x + cursorPadding.x, textY);
+                drawList->AddText(textPos, IM_COL32(235, 239, 255, 255), line.c_str());
+                ImVec2 textSize = ImGui::CalcTextSize(line.c_str());
+                textY += textSize.y + 2.0f;
+            }
+
+            if (!waveMessage.empty()) {
+                ImVec2 messagePadding(16.0f, 10.0f);
+                ImVec2 messageSize = ImGui::CalcTextSize(waveMessage.c_str());
+                ImVec2 messagePos = ImVec2((imageMin.x + imageMax.x) * 0.5f, imageMin.y + 35.0f);
+                ImVec2 messageMin = ImVec2(messagePos.x - messageSize.x * 0.5f - messagePadding.x, messagePos.y - messagePadding.y);
+                ImVec2 messageMax = ImVec2(messagePos.x + messageSize.x * 0.5f + messagePadding.x, messagePos.y + messageSize.y + messagePadding.y);
+
+                drawList->AddRectFilled(messageMin, messageMax, IM_COL32(30, 32, 52, 220), 10.0f);
+                drawList->AddRect(messageMin, messageMax, IM_COL32(120, 150, 255, 200), 10.0f, ImDrawFlags_None, 1.5f);
+                ImVec2 textPos = ImVec2(messagePos.x - messageSize.x * 0.5f, messagePos.y);
+                drawList->AddText(textPos, IM_COL32(240, 243, 255, 255), waveMessage.c_str());
+            }
+        }
+    }
 
     End();
 }
