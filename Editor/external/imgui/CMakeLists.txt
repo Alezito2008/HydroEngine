@@ -24,10 +24,13 @@ target_include_directories(imgui PUBLIC
 # Dependencias externas
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(X11 REQUIRED)
 
+if (UNIX)
+    find_package(X11 REQUIRED)
+    target_link_libraries(imgui PUBLIC X11::X11)
+endif()
 # Linkear dependencias necesarias
-target_link_libraries(imgui PUBLIC OpenGL::GL glfw X11::X11)
+target_link_libraries(imgui PUBLIC OpenGL::GL glfw)
 
 # Opcional: define el estándar C++
 target_compile_features(imgui PUBLIC cxx_std_17)

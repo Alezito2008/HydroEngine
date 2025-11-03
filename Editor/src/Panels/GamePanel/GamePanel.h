@@ -1,7 +1,11 @@
 #pragma once
 
+#include "Core/WindowManager.h"
+
 namespace GamePanel {
-    bool InitFramebuffer(unsigned int width, unsigned int height);
+    void Initialize(WindowManager& windowManager, unsigned int width, unsigned int height);
+    void Shutdown();
+
     void Render();
     void Bind();
     void Unbind();

@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(ECS CXX)
 
-add_library(ECS SHARED
+add_library(ECS STATIC
     src/GameObject.cpp
     src/Component.cpp
     src/ComponentRegistry.cpp

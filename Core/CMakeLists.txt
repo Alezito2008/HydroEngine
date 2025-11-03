@@ -9,16 +9,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Archivos fuente
 file(GLOB_RECURSE SOURCES src/*.cpp)
 
+set(CORE_SOURCES ${SOURCES})
+list(FILTER CORE_SOURCES EXCLUDE REGEX "/Main\\.cpp$")
+
 set(GLAD_DIR ${CMAKE_CURRENT_SOURCE_DIR}/external/glad)
 include_directories(${GLAD_DIR}/include)
 
 # --- Librería principal ---
-add_library(Core SHARED ${SOURCES})
+add_library(Core STATIC ${CORE_SOURCES})
 
 # Definiciones para Windows
 if (WIN32)
     target_compile_definitions(Core PRIVATE NOMINMAX)
 endif()
+
+add_executable(CoreDemo src/Main.cpp)
+target_link_libraries(CoreDemo PRIVATE Core)
 
 # Includes comunes
 target_include_directories(Core PUBLIC

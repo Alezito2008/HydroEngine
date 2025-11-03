@@ -5,6 +5,8 @@
 #ifdef _WIN32
 #include <windows.h>
 
+#undef LoadLibrary
+
 #define PLUGIN_EXT ".dll"
 #elif __linux__
 #include <dlfcn.h>
@@ -36,7 +38,7 @@ const std::unordered_map<std::string, ComponentRegistry::CreatorFunc> &Component
 
 bool ComponentRegistry::LoadLibrary(const std::string &path, bool clear /*= true*/)
 {
-    if (clear) Clear();
+    if (clear) ComponentRegistry::Clear();
 
     using RegisterComponentsFunc = void(*)();
     static void* handle = nullptr;
