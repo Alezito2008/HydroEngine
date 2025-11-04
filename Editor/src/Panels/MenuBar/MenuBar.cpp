@@ -4,6 +4,7 @@
 #include "IconFont/IconsFontAwesome7.h"
 #include "Preferences.h"
 #include "Lighting/LightingSettingsPopup.h"
+#include "GamePanel/GamePanel.h"
 
 static Preferences& preferences = PreferenceManager::GetPreferences();
 
@@ -42,6 +43,25 @@ void MenuBar::Render() {
             if (MenuItem("Lighting Settings...")) {
                 LightingSettingsPopup::Open();
             }
+            EndMenu();
+        }
+
+        if (BeginMenu( ICON_FA_GAMEPAD " Game")) {
+            bool hasScene = GamePanel::GetScene() != nullptr;
+            bool paused = GamePanel::IsPaused();
+
+            if (MenuItem(paused ? ICON_FA_PLAY " Resume" : ICON_FA_PAUSE " Pause", nullptr, false, hasScene)) {
+                GamePanel::TogglePause();
+            }
+
+            if (MenuItem( ICON_FA_ROTATE_RIGHT " Restart Run", nullptr, false, hasScene)) {
+                GamePanel::Restart();
+            }
+
+            if (MenuItem( ICON_FA_ARROWS_ROTATE " Reload Scene", nullptr, false, hasScene)) {
+                GamePanel::Reload();
+            }
+
             EndMenu();
         }
 

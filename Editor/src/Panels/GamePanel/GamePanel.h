@@ -14,4 +14,9 @@ namespace GamePanel {
     void Clear(float r = 0.0f, float g = 0.0f, float b = 0.0f);
 
     DemoScene* GetScene();
+    void TogglePause();
+    void SetPaused(bool paused);
+    bool IsPaused();
+    void Restart();
+    void Reload();
 }

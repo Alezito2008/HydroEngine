@@ -42,6 +42,8 @@ public:
     void Initialize(GLFWwindow* window, unsigned int width, unsigned int height);
     void Resize(unsigned int width, unsigned int height);
     void Update(float deltaTime, bool allowInput);
+    void Reload();
+    void ResetGameplay();
 
     LightingSettings& GetLightingSettings() { return m_lighting; }
     const LightingSettings& GetLightingSettings() const { return m_lighting; }

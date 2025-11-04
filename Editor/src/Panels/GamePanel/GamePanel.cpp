@@ -25,6 +25,7 @@ static WindowManager* windowOwner  = nullptr;
 static GLFWwindow* glfwWindow      = nullptr;
 static double lastFrameTime        = 0.0;
 static bool capturingInput         = false;
+static bool paused                 = false;
 
 namespace {
     void DestroyFramebuffer()
@@ -113,6 +114,8 @@ void GamePanel::Initialize(WindowManager& windowManager, unsigned int width, uns
     demoScene.Initialize(glfwWindow, fbWidth, fbHeight);
     sceneInitialized = true;
     lastFrameTime = glfwGetTime();
+    capturingInput = false;
+    paused = false;
 }
 
 void GamePanel::Shutdown()
@@ -123,6 +126,7 @@ void GamePanel::Shutdown()
     windowOwner       = nullptr;
     glfwWindow        = nullptr;
     capturingInput    = false;
+    paused            = false;
 }
 
 void GamePanel::Render()
@@ -146,26 +150,40 @@ void GamePanel::Render()
     bool rightMouseDown = ImGui::IsMouseDown(ImGuiMouseButton_Right);
 
     if (sceneInitialized) {
-        if (!capturingInput && windowHovered && rightMouseDown) {
-            capturingInput = true;
-            if (windowOwner) {
-                windowOwner->SetCursorMode(CursorMode::Disabled);
+        if (paused) {
+            if (capturingInput) {
+                capturingInput = false;
+                if (windowOwner) {
+                    windowOwner->SetCursorMode(CursorMode::Normal);
+                }
             }
-            lastFrameTime = glfwGetTime();
-        } else if (capturingInput && !rightMouseDown) {
-            capturingInput = false;
-            if (windowOwner) {
-                windowOwner->SetCursorMode(CursorMode::Normal);
+        } else {
+            if (!capturingInput && windowHovered && rightMouseDown) {
+                capturingInput = true;
+                if (windowOwner) {
+                    windowOwner->SetCursorMode(CursorMode::Disabled);
+                }
+                lastFrameTime = glfwGetTime();
+            } else if (capturingInput && !rightMouseDown) {
+                capturingInput = false;
+                if (windowOwner) {
+                    windowOwner->SetCursorMode(CursorMode::Normal);
+                }
             }
         }
     }
 
-    bool allowInput = capturingInput && sceneInitialized;
+    bool allowInput = capturingInput && sceneInitialized && !paused;
 
     if (sceneInitialized && framebufferReady) {
         double currentTime = glfwGetTime();
         float deltaTime = static_cast<float>(currentTime - lastFrameTime);
         lastFrameTime = currentTime;
+
+        if (paused) {
+            deltaTime = 0.0f;
+            allowInput = false;
+        }
 
         Bind();
         demoScene.Resize(fbWidth, fbHeight);
@@ -250,6 +268,20 @@ void GamePanel::Render()
                 ImVec2 textPos = ImVec2(messagePos.x - messageSize.x * 0.5f, messagePos.y);
                 drawList->AddText(textPos, IM_COL32(240, 243, 255, 255), waveMessage.c_str());
             }
+
+            if (paused) {
+                const char* pausedLabel = "Paused";
+                ImVec2 labelSize = ImGui::CalcTextSize(pausedLabel);
+                ImVec2 labelPadding(28.0f, 14.0f);
+                ImVec2 center = ImVec2((imageMin.x + imageMax.x) * 0.5f, (imageMin.y + imageMax.y) * 0.5f);
+                ImVec2 pausedMin = ImVec2(center.x - labelSize.x * 0.5f - labelPadding.x, center.y - labelSize.y * 0.5f - labelPadding.y);
+                ImVec2 pausedMax = ImVec2(center.x + labelSize.x * 0.5f + labelPadding.x, center.y + labelSize.y * 0.5f + labelPadding.y);
+
+                drawList->AddRectFilled(pausedMin, pausedMax, IM_COL32(20, 24, 36, 220), 12.0f);
+                drawList->AddRect(pausedMin, pausedMax, IM_COL32(120, 150, 255, 200), 12.0f, ImDrawFlags_None, 1.5f);
+                ImVec2 labelPos(center.x - labelSize.x * 0.5f, center.y - labelSize.y * 0.5f);
+                drawList->AddText(labelPos, IM_COL32(240, 243, 255, 255), pausedLabel);
+            }
         }
     }
 
@@ -278,4 +310,64 @@ DemoScene* GamePanel::GetScene()
         return nullptr;
     }
     return &demoScene;
+}
+
+void GamePanel::TogglePause()
+{
+    SetPaused(!paused);
+}
+
+void GamePanel::SetPaused(bool value)
+{
+    if (paused == value) {
+        return;
+    }
+
+    paused = value;
+
+    if (paused) {
+        if (capturingInput && windowOwner) {
+            windowOwner->SetCursorMode(CursorMode::Normal);
+        }
+        capturingInput = false;
+    } else {
+        lastFrameTime = glfwGetTime();
+    }
+}
+
+bool GamePanel::IsPaused()
+{
+    return paused;
+}
+
+void GamePanel::Restart()
+{
+    if (!sceneInitialized) {
+        return;
+    }
+
+    paused = false;
+    capturingInput = false;
+    if (windowOwner) {
+        windowOwner->SetCursorMode(CursorMode::Normal);
+    }
+
+    demoScene.ResetGameplay();
+    lastFrameTime = glfwGetTime();
+}
+
+void GamePanel::Reload()
+{
+    if (!sceneInitialized) {
+        return;
+    }
+
+    paused = false;
+    capturingInput = false;
+    if (windowOwner) {
+        windowOwner->SetCursorMode(CursorMode::Normal);
+    }
+
+    demoScene.Reload();
+    lastFrameTime = glfwGetTime();
 }

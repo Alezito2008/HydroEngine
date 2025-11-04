@@ -82,6 +82,39 @@ void DemoScene::Initialize(GLFWwindow* window, unsigned int width, unsigned int 
 	m_initialized = true;
 }
 
+void DemoScene::Reload()
+{
+	if (!m_initialized || m_window == nullptr) {
+		return;
+	}
+
+	glEnable(GL_DEPTH_TEST);
+
+	m_inputManager = std::make_unique<InputManager>(m_window);
+
+	m_shader = std::make_unique<Shader>("res/shaders/model.vert", "res/shaders/model.frag");
+	m_model = std::make_unique<Model>("res/models/backpack/backpack.obj");
+	m_collectibleModel = std::make_unique<Model>("res/models/diamond/Diamond3D.fbx");
+
+	m_shader->Bind();
+	m_shader->setBool("useSolidColor", false);
+	m_shader->setVec3("solidColor", glm::vec3(0.0f));
+	m_shader->setFloat("solidSpecularStrength", 0.6f);
+
+	UpdateProjection();
+	m_sceneReady = false;
+	ResetGame();
+}
+
+void DemoScene::ResetGameplay()
+{
+	if (!m_initialized) {
+		return;
+	}
+
+	ResetGame();
+}
+
 void DemoScene::Resize(unsigned int width, unsigned int height)
 {
 	if (width == 0 || height == 0) {
