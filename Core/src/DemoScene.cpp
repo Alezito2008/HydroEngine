@@ -13,6 +13,10 @@
 #include "input/InputManager.h"
 #include "graphics/Shader.h"
 #include "graphics/Model.h"
+#include "graphics/Texture.h"
+#include "graphics/VertexArray.h"
+#include "graphics/VertexBuffer.h"
+#include "graphics/VertexBufferLayout.h"
 
 #include "SceneManager.h"
 #include "Scene.h"
@@ -28,6 +32,50 @@ const glm::vec3 kDefaultBackpackScale{1.0f};
 constexpr const char* kSceneName = "Demo Scene";
 constexpr const char* kWorldRootName = "World";
 constexpr const char* kBackpackName = "Backpack Display";
+
+constexpr float kSkyboxVertices[] = {
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f
+};
 
 GameObject* FindRecursive(GameObject* object, const std::string& name) {
 	if (!object) {
@@ -65,6 +113,7 @@ void DemoScene::Initialize(GLFWwindow* window, unsigned int width, unsigned int 
 	m_shader = std::make_unique<Shader>("res/shaders/model.vert", "res/shaders/model.frag");
 	m_model = std::make_unique<Model>("res/models/backpack/backpack.obj");
 	m_collectibleModel = std::make_unique<Model>("res/models/diamond/Diamond3D.fbx");
+	InitializeSkybox();
 
 	m_shader->Bind();
 	m_shader->setBool("useSolidColor", false);
@@ -97,6 +146,7 @@ void DemoScene::Reload()
 	m_shader = std::make_unique<Shader>("res/shaders/model.vert", "res/shaders/model.frag");
 	m_model = std::make_unique<Model>("res/models/backpack/backpack.obj");
 	m_collectibleModel = std::make_unique<Model>("res/models/diamond/Diamond3D.fbx");
+	InitializeSkybox();
 
 	m_shader->Bind();
 	m_shader->setBool("useSolidColor", false);
@@ -125,6 +175,48 @@ void DemoScene::SetCollectibleCollectedCallback(CollectibleCollectedCallback cal
 void DemoScene::SetCollectibleLogCallback(CollectibleLogCallback callback)
 {
 	m_collectibleLogCallback = std::move(callback);
+}
+
+void DemoScene::InitializeSkybox()
+{
+	m_skyboxShader = std::make_unique<Shader>("res/shaders/skybox.vert", "res/shaders/skybox.frag");
+	m_skyboxTexture = std::make_unique<Texture>("res/skybox.png", false, TextureWrapping::Repeat, TextureFiltering::Linear);
+
+	VertexBufferLayout layout;
+	layout.Push<float>(3);
+
+	m_skyboxVAO = std::make_unique<VertexArray>();
+	m_skyboxVBO = std::make_unique<VertexBuffer>(kSkyboxVertices, static_cast<unsigned int>(sizeof(kSkyboxVertices)));
+	m_skyboxVAO->AddBuffer(*m_skyboxVBO, layout);
+
+	m_skyboxShader->Bind();
+	m_skyboxShader->setInt("skyboxTexture", 0);
+}
+
+void DemoScene::RenderSkybox(const glm::mat4& view)
+{
+	if (!m_skyboxShader || !m_skyboxTexture || !m_skyboxVAO) {
+		return;
+	}
+
+	// Render the equirectangular skybox before the rest of the scene geometry.
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_FALSE);
+
+	glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(view));
+
+	m_skyboxShader->Bind();
+	m_skyboxShader->setMat4("view", viewNoTranslation);
+	m_skyboxShader->setMat4("projection", m_projection);
+	m_skyboxTexture->Bind(0);
+
+	m_skyboxVAO->Bind();
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	m_skyboxVAO->Unbind();
+	m_skyboxTexture->Unbind();
+
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
 }
 
 void DemoScene::Resize(unsigned int width, unsigned int height)
@@ -159,6 +251,7 @@ void DemoScene::Update(float deltaTime, bool allowInput)
 	m_renderer.Clear();
 
 	glm::mat4 view = m_camera.GetView();
+	RenderSkybox(view);
 
 	m_shader->Bind();
 	m_shader->setBool("useSolidColor", false);

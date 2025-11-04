@@ -19,6 +19,9 @@ class Scene;
 class GameObject;
 class Transform;
 class CollectibleComponent;
+class Texture;
+class VertexArray;
+class VertexBuffer;
 
 class DemoScene {
 public:
@@ -66,6 +69,8 @@ private:
     void UpdateProjection();
     void UpdateGameplay(float deltaTime);
     void RenderCollectibles(const glm::mat4& view);
+    void InitializeSkybox();
+    void RenderSkybox(const glm::mat4& view);
     void SpawnCollectibles(std::size_t count);
     void ResetGame();
     void SetupECSScene();
@@ -79,6 +84,10 @@ private:
     std::unique_ptr<Shader> m_shader;
     std::unique_ptr<Model> m_model;
     std::unique_ptr<Model> m_collectibleModel;
+    std::unique_ptr<Shader> m_skyboxShader;
+    std::unique_ptr<Texture> m_skyboxTexture;
+    std::unique_ptr<VertexArray> m_skyboxVAO;
+    std::unique_ptr<VertexBuffer> m_skyboxVBO;
 
     glm::mat4 m_projection{};
     glm::vec3 m_lightPos{2.0f, 2.0f, 2.0f};
