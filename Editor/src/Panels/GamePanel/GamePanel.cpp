@@ -112,6 +112,9 @@ void GamePanel::Initialize(WindowManager& windowManager, unsigned int width, uns
     }
 
     demoScene.Initialize(glfwWindow, fbWidth, fbHeight);
+    demoScene.SetCollectibleLogCallback([](const std::string& message) {
+        Console::Debug(message);
+    });
     sceneInitialized = true;
     lastFrameTime = glfwGetTime();
     capturingInput = false;
@@ -127,6 +130,8 @@ void GamePanel::Shutdown()
     glfwWindow        = nullptr;
     capturingInput    = false;
     paused            = false;
+    demoScene.SetCollectibleCollectedCallback({});
+    demoScene.SetCollectibleLogCallback({});
 }
 
 void GamePanel::Render()

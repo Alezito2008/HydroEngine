@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <random>
 #include <string>
@@ -44,6 +45,11 @@ public:
     void Update(float deltaTime, bool allowInput);
     void Reload();
     void ResetGameplay();
+
+    using CollectibleCollectedCallback = std::function<void(int scoreDelta, int newScore, int collected, int total)>;
+    using CollectibleLogCallback = std::function<void(const std::string& message)>;
+    void SetCollectibleCollectedCallback(CollectibleCollectedCallback callback);
+    void SetCollectibleLogCallback(CollectibleLogCallback callback);
 
     LightingSettings& GetLightingSettings() { return m_lighting; }
     const LightingSettings& GetLightingSettings() const { return m_lighting; }
@@ -125,4 +131,7 @@ private:
     bool m_sceneReady{false};
 
     bool m_initialized{false};
+
+    CollectibleCollectedCallback m_collectibleCollectedCallback;
+    CollectibleLogCallback m_collectibleLogCallback;
 };

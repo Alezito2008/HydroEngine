@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <string>
+#include <utility>
 
 #include "input/InputManager.h"
 #include "graphics/Shader.h"
@@ -113,6 +115,16 @@ void DemoScene::ResetGameplay()
 	}
 
 	ResetGame();
+}
+
+void DemoScene::SetCollectibleCollectedCallback(CollectibleCollectedCallback callback)
+{
+	m_collectibleCollectedCallback = std::move(callback);
+}
+
+void DemoScene::SetCollectibleLogCallback(CollectibleLogCallback callback)
+{
+	m_collectibleLogCallback = std::move(callback);
 }
 
 void DemoScene::Resize(unsigned int width, unsigned int height)
@@ -327,10 +339,20 @@ void DemoScene::UpdateGameplay(float deltaTime)
 
 		float distance = glm::length(cameraPos - worldPos);
 		if (distance <= data.pickupRadius) {
+			// Pickup handler
 			data.collected = true;
 			handle.object->SetActive(false);
 			m_stats.score += data.scoreValue;
 			++collectedCount;
+			if (m_collectibleLogCallback) {
+				char message[128];
+				std::snprintf(message, sizeof(message), "Diamond collected (+%d). Score: %d | %d/%zu collected", data.scoreValue, m_stats.score, collectedCount, m_activeCollectibles);
+				const std::string messageStr(message);
+				m_collectibleLogCallback(messageStr);
+			}
+			if (m_collectibleCollectedCallback) {
+				m_collectibleCollectedCallback(data.scoreValue, m_stats.score, collectedCount, static_cast<int>(m_activeCollectibles));
+			}
 			continue;
 		}
 
