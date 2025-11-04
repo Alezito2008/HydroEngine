@@ -1,5 +1,6 @@
 #include "WindowManager.h"
 
+#include <algorithm>
 #include <iostream>
 
 bool WindowManager::m_IsMinimized = false;
@@ -47,6 +48,9 @@ WindowManager::WindowManager(const WindowSettings& settings) : m_windowSettings(
 	glfwSetWindowUserPointer(m_window, this);
 	glfwMakeContextCurrent(m_window);
 	glfwSwapInterval(1);
+	m_vsyncEnabled = true;
+	glfwGetWindowPos(m_window, &m_windowedPosX, &m_windowedPosY);
+	glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Error al inicializar GLAD" << std::endl;
@@ -87,6 +91,10 @@ void WindowManager::SetDimensions(int width, int height)
 	m_windowSettings.width = width;
 	m_windowSettings.height = height;
 	glViewport(0, 0, width, height);
+	if (!m_isFullscreen) {
+		m_windowedWidth = width;
+		m_windowedHeight = height;
+	}
 }
 
 void WindowManager::SetCursorMode(CursorMode mode)
@@ -119,4 +127,70 @@ CursorMode WindowManager::GetCursorMode() const
 {
 	int mode = glfwGetInputMode(m_window, GLFW_CURSOR);
 	return static_cast<CursorMode>(mode);
+}
+
+void WindowManager::SetFullscreen(bool enabled)
+{
+	if (m_isFullscreen == enabled) {
+		return;
+	}
+
+	if (enabled) {
+		glfwGetWindowPos(m_window, &m_windowedPosX, &m_windowedPosY);
+		glfwGetWindowSize(m_window, &m_windowedWidth, &m_windowedHeight);
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		if (!monitor) {
+			return;
+		}
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		if (!mode) {
+			return;
+		}
+
+		glfwSetWindowMonitor(m_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		m_isFullscreen = true;
+	} else {
+		glfwSetWindowMonitor(m_window, nullptr, m_windowedPosX, m_windowedPosY, std::max(m_windowedWidth, 1), std::max(m_windowedHeight, 1), 0);
+		m_isFullscreen = false;
+	}
+
+	if (m_isFullscreen) {
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		if (mode) {
+			m_windowSettings.width = mode->width;
+			m_windowSettings.height = mode->height;
+			glViewport(0, 0, mode->width, mode->height);
+		}
+	} else {
+		m_windowSettings.width = std::max(m_windowedWidth, 1);
+		m_windowSettings.height = std::max(m_windowedHeight, 1);
+		glViewport(0, 0, m_windowSettings.width, m_windowSettings.height);
+	}
+}
+
+void WindowManager::ToggleFullscreen()
+{
+	SetFullscreen(!m_isFullscreen);
+}
+
+bool WindowManager::IsFullscreen() const
+{
+	return m_isFullscreen;
+}
+
+void WindowManager::SetVSync(bool enabled)
+{
+	m_vsyncEnabled = enabled;
+	glfwSwapInterval(enabled ? 1 : 0);
+}
+
+void WindowManager::ToggleVSync()
+{
+	SetVSync(!m_vsyncEnabled);
+}
+
+bool WindowManager::IsVSyncEnabled() const
+{
+	return m_vsyncEnabled;
 }

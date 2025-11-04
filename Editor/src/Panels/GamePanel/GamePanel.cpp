@@ -26,6 +26,14 @@ static GLFWwindow* glfwWindow      = nullptr;
 static double lastFrameTime        = 0.0;
 static bool capturingInput         = false;
 static bool paused                 = false;
+static double fpsAccumulator       = 0.0;
+static int fpsFrameCount           = 0;
+static float currentFPS            = 0.0f;
+constexpr double kFpsUpdateInterval = 0.5;
+static bool panelFullscreen        = false;
+static ImVec2 previousWindowPos{};
+static ImVec2 previousWindowSize{};
+static bool hasStoredLayout        = false;
 
 namespace {
     void DestroyFramebuffer()
@@ -98,6 +106,13 @@ namespace {
             glViewport(0, 0, width, height);
         }
     }
+
+    void ResetFrameClock()
+    {
+        lastFrameTime = glfwGetTime();
+        fpsAccumulator = 0.0;
+        fpsFrameCount = 0;
+    }
 }
 
 void GamePanel::Initialize(WindowManager& windowManager, unsigned int width, unsigned int height)
@@ -116,7 +131,8 @@ void GamePanel::Initialize(WindowManager& windowManager, unsigned int width, uns
         Console::Debug(message);
     });
     sceneInitialized = true;
-    lastFrameTime = glfwGetTime();
+    ResetFrameClock();
+    currentFPS = 0.0f;
     capturingInput = false;
     paused = false;
 }
@@ -132,13 +148,59 @@ void GamePanel::Shutdown()
     paused            = false;
     demoScene.SetCollectibleCollectedCallback({});
     demoScene.SetCollectibleLogCallback({});
+    currentFPS = 0.0f;
+    fpsAccumulator = 0.0;
+    fpsFrameCount = 0;
 }
 
 void GamePanel::Render()
 {
     using namespace ImGui;
 
-    Begin(ICON_FA_GAMEPAD " Game###Game");
+    ImGuiWindowFlags windowFlags = ImGuiWindowFlags_None;
+    bool fullscreenStylesPushed = false;
+    if (panelFullscreen) {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->WorkPos);
+        ImGui::SetNextWindowSize(viewport->WorkSize);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        windowFlags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                      ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBringToFrontOnFocus |
+                      ImGuiWindowFlags_NoNavFocus;
+        fullscreenStylesPushed = true;
+    } else if (hasStoredLayout) {
+        ImGui::SetNextWindowPos(previousWindowPos);
+        ImGui::SetNextWindowSize(previousWindowSize);
+    }
+
+    Begin(ICON_FA_GAMEPAD " Game###Game", nullptr, windowFlags);
+
+    if (fullscreenStylesPushed) {
+        ImGui::PopStyleVar(3);
+    }
+
+    bool fullscreenRequested = panelFullscreen;
+    Checkbox("Panel Fullscreen", &fullscreenRequested);
+
+    if (fullscreenRequested != panelFullscreen) {
+        if (fullscreenRequested) {
+            previousWindowPos = GetWindowPos();
+            previousWindowSize = GetWindowSize();
+            hasStoredLayout = true;
+        }
+        panelFullscreen = fullscreenRequested;
+    }
+
+    if (windowOwner != nullptr) {
+        SameLine();
+        bool vsyncEnabled = windowOwner->IsVSyncEnabled();
+        if (ImGui::Checkbox("VSync", &vsyncEnabled)) {
+            windowOwner->SetVSync(vsyncEnabled);
+        }
+    }
 
     ImVec2 avail = GetContentRegionAvail();
     unsigned int targetWidth  = static_cast<unsigned int>(std::max(1.0f, avail.x));
@@ -163,13 +225,28 @@ void GamePanel::Render()
                 }
             }
         } else {
-            if (!capturingInput && windowHovered && rightMouseDown) {
+            if (panelFullscreen && ImGui::IsKeyPressed(ImGuiKey_Escape)) {
+                panelFullscreen = false;
+                if (capturingInput && windowOwner) {
+                    windowOwner->SetCursorMode(CursorMode::Normal);
+                }
+                capturingInput = false;
+            }
+            if (panelFullscreen) {
+                if (!capturingInput) {
+                    capturingInput = true;
+                    if (windowOwner) {
+                        windowOwner->SetCursorMode(CursorMode::Disabled);
+                    }
+                    ResetFrameClock();
+                }
+            } else if (!capturingInput && windowHovered && rightMouseDown) {
                 capturingInput = true;
                 if (windowOwner) {
                     windowOwner->SetCursorMode(CursorMode::Disabled);
                 }
-                lastFrameTime = glfwGetTime();
-            } else if (capturingInput && !rightMouseDown) {
+                ResetFrameClock();
+            } else if (capturingInput && (!panelFullscreen && !rightMouseDown)) {
                 capturingInput = false;
                 if (windowOwner) {
                     windowOwner->SetCursorMode(CursorMode::Normal);
@@ -178,7 +255,7 @@ void GamePanel::Render()
         }
     }
 
-    bool allowInput = capturingInput && sceneInitialized && !paused;
+    bool allowInput = (panelFullscreen || capturingInput) && sceneInitialized && !paused;
 
     if (sceneInitialized && framebufferReady) {
         double currentTime = glfwGetTime();
@@ -188,6 +265,18 @@ void GamePanel::Render()
         if (paused) {
             deltaTime = 0.0f;
             allowInput = false;
+        }
+
+        if (!paused && deltaTime > 0.0f) {
+            fpsAccumulator += deltaTime;
+            ++fpsFrameCount;
+            if (fpsAccumulator >= kFpsUpdateInterval) {
+                currentFPS = static_cast<float>(fpsFrameCount / fpsAccumulator);
+                fpsAccumulator = 0.0;
+                fpsFrameCount = 0;
+            } else if (currentFPS <= 0.0f) {
+                currentFPS = 1.0f / deltaTime;
+            }
         }
 
         Bind();
@@ -210,9 +299,11 @@ void GamePanel::Render()
 
         if (drawList != nullptr) {
             std::vector<std::string> hudLines;
-            hudLines.reserve(9);
+            hudLines.reserve(11);
 
             char buffer[64];
+            std::snprintf(buffer, sizeof(buffer), "FPS: %.1f", currentFPS);
+            hudLines.emplace_back(buffer);
             std::snprintf(buffer, sizeof(buffer), "Score: %d", stats.score);
             hudLines.emplace_back(buffer);
             std::snprintf(buffer, sizeof(buffer), "Wave: %d", stats.wave);
@@ -229,6 +320,7 @@ void GamePanel::Render()
             hudLines.emplace_back("");
             hudLines.emplace_back("Right click to control camera");
             hudLines.emplace_back("WASD to move, Shift to sprint");
+            hudLines.emplace_back("Space to rise, Ctrl to descend");
             hudLines.emplace_back("Collect the diamonds nearby");
             hudLines.emplace_back("Press R to reset the run");
 
@@ -336,7 +428,7 @@ void GamePanel::SetPaused(bool value)
         }
         capturingInput = false;
     } else {
-        lastFrameTime = glfwGetTime();
+        ResetFrameClock();
     }
 }
 
@@ -358,7 +450,7 @@ void GamePanel::Restart()
     }
 
     demoScene.ResetGameplay();
-    lastFrameTime = glfwGetTime();
+    ResetFrameClock();
 }
 
 void GamePanel::Reload()
@@ -374,5 +466,5 @@ void GamePanel::Reload()
     }
 
     demoScene.Reload();
-    lastFrameTime = glfwGetTime();
+    ResetFrameClock();
 }

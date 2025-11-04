@@ -328,6 +328,7 @@ void DemoScene::ProcessMovement(float deltaTime, bool allowInput)
 	}
 
 	glm::vec3 direction(0.0f);
+	const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
 
 	float velocity = m_cameraSpeed * deltaTime;
 
@@ -339,6 +340,8 @@ void DemoScene::ProcessMovement(float deltaTime, bool allowInput)
 	if (m_inputManager->IsKeyPressed(KeyCode::KEY_S)) direction -= m_camera.GetFront();
 	if (m_inputManager->IsKeyPressed(KeyCode::KEY_A)) direction -= m_camera.GetRight();
 	if (m_inputManager->IsKeyPressed(KeyCode::KEY_D)) direction += m_camera.GetRight();
+	if (m_inputManager->IsKeyPressed(KeyCode::KEY_SPACE)) direction -= worldUp;
+	if (m_inputManager->IsKeyPressed(KeyCode::KEY_LEFT_CONTROL) || m_inputManager->IsKeyPressed(KeyCode::KEY_RIGHT_CONTROL)) direction += worldUp;
 
 	if (glm::length(direction) > 0.0f) {
 		direction = glm::normalize(direction) * velocity;

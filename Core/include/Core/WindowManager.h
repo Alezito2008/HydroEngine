@@ -36,6 +36,12 @@ public:
 	void SetCursorMode(CursorMode mode);
 	void SetCursorPosCallback(CursorPosCallback handler);
 	void CloseWindow();
+	void SetFullscreen(bool enabled);
+	void ToggleFullscreen();
+	bool IsFullscreen() const;
+	void SetVSync(bool enabled);
+	void ToggleVSync();
+	bool IsVSyncEnabled() const;
 
 	float GetAspectRatio() const;
 	bool GetWindowShouldClose() const;
@@ -45,6 +51,12 @@ private:
 	GLFWwindow* m_window;
 	WindowSettings m_windowSettings;
 	CursorPosCallback m_cursorPosCallback = nullptr;
+	bool m_isFullscreen{false};
+	int m_windowedPosX{0};
+	int m_windowedPosY{0};
+	int m_windowedWidth{0};
+	int m_windowedHeight{0};
+	bool m_vsyncEnabled{true};
 
 	static void FrameBufferSizeCallback(GLFWwindow* window, int width, int height);
 	static void CursorPosCallbackInternal(GLFWwindow* window, double posX, double posY);
