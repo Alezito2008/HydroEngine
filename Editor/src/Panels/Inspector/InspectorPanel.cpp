@@ -42,7 +42,8 @@ static void DrawSerializedField(ISerializedField* field, bool isEnabled) {
         DragFloat(ToTag(name).c_str(), value, 0.05f, -1000.0f, 1000.0f, "%.3f");
     } else if (type == typeid(bool)) {
         bool* value = static_cast<bool*>(field->GetPtr());
-        Checkbox(ToTag(name).c_str(), value);
+        std::string n = name + ToTag(name);
+        Checkbox(n.c_str(), value);
     } else if (type == typeid(glm::vec2)) {
         auto* value = static_cast<glm::vec2*>(field->GetPtr());
         Text("%s:", name);

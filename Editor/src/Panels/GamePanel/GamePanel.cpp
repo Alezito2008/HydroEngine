@@ -224,7 +224,7 @@ void GamePanel::Render()
             hudLines.emplace_back("");
             hudLines.emplace_back("Right click to control camera");
             hudLines.emplace_back("WASD to move, Shift to sprint");
-            hudLines.emplace_back("Collect the mini backpacks nearby");
+            hudLines.emplace_back("Collect the diamonds nearby");
             hudLines.emplace_back("Press R to reset the run");
 
             ImVec2 padding(14.0f, 12.0f);
